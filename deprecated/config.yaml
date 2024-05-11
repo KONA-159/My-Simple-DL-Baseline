@@ -1,0 +1,18 @@
+dataset_root: ./dataset
+training_set: train.csv
+testing_set: test.csv
+images: images
+device: cuda:1
+is_rgb: True
+category_num: 176
+k_fold: 5
+
+hyper_parameter:
+  batch_size: 10
+  epoch: 100
+  loss_function: CrossEntropyLoss
+  optimizer: Adam
+  model: ResNet18
+  learning_rate: 0.001
+  weight_decay: 0.00001
+

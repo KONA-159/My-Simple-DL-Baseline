@@ -1,0 +1,56 @@
+# 构造映射
+
+
+    # def normalize(self,mean=None,std=None):  # not rgb 暂时弃用
+    #     if mean is not None and std is not None:
+    #         self.__is_normalized = True
+    #         self.__data_set_mean = mean
+    #         self.__data_set_std = std
+    #         return mean,std
+    #     if not self.__is_normalized:
+    #         device = Config.device
+    #         data_set_mean_sum = torch.tensor([0., 0., 0.], device=device)
+    #         data_set_std_sum = torch.tensor([0., 0., 0.], device=device)
+    #         for i in range(self.__len__()):
+    #             img: torch.Tensor = self.__getitem__(i)[0]
+    #             data_set_mean_sum += torch.mean(img, dim=[1, 2])
+    #             data_set_std_sum += torch.std(img, dim=[1, 2])
+    #         data_set_mean = data_set_mean_sum / self.__len__()
+    #         data_set_std = data_set_std_sum / self.__len__()  # 这个std其实不对的，只能大概优化一下
+    #         self.__is_normalized = True
+    #         self.__data_set_mean = data_set_mean
+    #         self.__data_set_std = data_set_std
+    #         return data_set_mean,data_set_std
+
+    # if self.__is_normalized: 暂时不使用全局标准化
+    #     normalizer=torchvision.transforms.Normalize(self.__data_set_mean,self.__data_set_std)
+    #     image=normalizer(image)
+
+
+# 参考，这个方法可以保证每个fold中的分布相同
+# folds = train.copy()
+# Fold = StratifiedKFold(n_splits=CFG.n_fold, shuffle=True, random_state=CFG.seed)
+# for n, (train_index, valid_index) in enumerate(Fold.split(folds, folds['label'])):
+#     folds.loc[valid_index, 'fold'] = int(n)
+# folds['fold'] = folds['fold'].astype(int)
+# print(folds.groupby(['fold']).size())
+
+model_path='./models/' + Config.model_name + '_fold' + str(fold) + '_best.pth'
+
+model.load_state_dict(torch.load(model_path))
+
+# :.nf表示保留n为小数，四舍五入
+
+# 设置随机种子，以后可能有用
+# def seed_torch(seed=42):
+#     random.seed(seed)
+#     os.environ['PYTHONHASHSEED'] = str(seed)
+#     np.random.seed(seed)
+#     torch.manual_seed(seed)
+#     torch.cuda.manual_seed(seed)
+#     torch.backends.cudnn.deterministic = True
+#
+# seed_torch(seed=CFG.seed)
+
+# training_fold = data.dataset.Subset(data_set, training_fold_indices)#划分子集，但是因为不能分开预处理放弃了
+# testing_fold = data.dataset.Subset(data_set, testing_fold_indices)
